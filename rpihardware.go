@@ -23,6 +23,8 @@ var (
 	ErrUndefinedEndian = errors.New("Endian undefined")
 )
 
+var detectedHardware *Hardware
+
 //Hardware contians all information about a Raspberry Pi hardware.
 type Hardware struct {
 	Version       Version //Hardware version
@@ -45,5 +47,10 @@ func init() {
 //Check determines the currently used hardware and will return a pointer to the definition.
 //Check will return 'ErrHwNotDetected' if no hardware could be determined.
 func Check() (*Hardware, error) {
-	return detect()
+	if detectedHardware != nil {
+		return detectedHardware, nil
+	}
+	var err error
+	detectedHardware, err = detect()
+	return detectedHardware, err
 }
